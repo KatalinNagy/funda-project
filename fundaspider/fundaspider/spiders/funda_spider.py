@@ -1,4 +1,3 @@
-import time
 import re
 import datetime
 
@@ -39,12 +38,12 @@ def extract_numbers(string):
     return int_number
 
 
-class FundaAllSpider(scrapy.Spider):
-    name = "all_houses_spider"
-    start_urls = [sys.argv[1]]
+class FundaSpider(scrapy.Spider):
+    name = "funda_spider"
+    start_urls = ['https://www.funda.nl/koop/den-haag/3-dagen/sorteer-datum-af/']
 
     today_str = datetime.date.today().strftime("%Y-%m-%d")
-    output = "data/funda_" + today_str + ".csv"
+    output = "/home/katalin/PycharmProjectsFolder/funda-project/data/funda_" + today_str + ".csv"
 
     def __init__(self):
         # empty outputfile
@@ -123,10 +122,3 @@ class FundaAllSpider(scrapy.Spider):
             lst_values = df.values.tolist()
             for i in lst_values:
                 writer.writerow(i)
-
-
-c = CrawlerProcess({
-    'USER_AGENT': 'Mozilla/5.0',
-})
-c.crawl(FundaAllSpider)
-c.start()

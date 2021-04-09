@@ -6,6 +6,7 @@ channels:
 dependencies:
   - pandas=1.1.1
   - pip=20.2.2
+  - pyarrow=1.0.1
   - Scrapy=2.0.1
   - pip:
     - google-auth==1.28.1
