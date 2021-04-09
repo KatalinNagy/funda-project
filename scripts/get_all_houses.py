@@ -1,5 +1,6 @@
 import time
 import re
+import datetime
 
 import scrapy
 from scrapy.crawler import CrawlerProcess
@@ -8,6 +9,7 @@ import csv
 import time
 
 import sys
+
 
 def extract_numbers(string):
     lst_numbers = re.findall(r'\d+', string)
@@ -20,7 +22,9 @@ def extract_numbers(string):
 class FundaAllSpider(scrapy.Spider):
     name = "all_houses_spider"
     start_urls = [sys.argv[1]]
-    output = "data/funda.csv"
+
+    today_str = datetime.date.today().strftime("%Y-%m-%d")
+    output = "data/funda_" + today_str + ".csv"
 
     def __init__(self):
         # empty outputfile
@@ -33,8 +37,8 @@ class FundaAllSpider(scrapy.Spider):
         page_numbers = [extract_numbers(i) for i in page_numbers]
         page_links = [self.start_urls[0] + 'p' + str(i) + '/' for i in
                       range(2, max(page_numbers) + 1)]
-        page_links = page_links + self.start_urls
-
+        # page_links = page_links + self.start_urls
+        page_links.insert(0, self.start_urls[0])
         page_links = [sys.argv[1]]
 
         for link in page_links:
@@ -83,11 +87,13 @@ class FundaAllSpider(scrapy.Spider):
 
             rooms = [extract_numbers(i) for i in rooms]
 
+            update_date = [datetime.date.today()] * len(funda_streets)
+
             df = pd.DataFrame(list(
                 zip(funda_streets, funda_zip, funda_price, living, rooms,
-                    links)),
+                    links, update_date)),
                 columns=['street', 'zip', 'price', 'living_area',
-                         'nr_rooms', 'link'])
+                         'nr_rooms', 'link', 'update_date'])
 
             lst_values = df.values.tolist()
             for i in lst_values:

@@ -11,3 +11,4 @@ dependencies:
     - google-auth==1.28.1
     - google-cloud-storage==1.37.1
     - google-auth-oauthlib==0.4.4
+    - google-cloud-bigquery==2.13.1
