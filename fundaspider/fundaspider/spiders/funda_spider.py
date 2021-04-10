@@ -45,6 +45,10 @@ class FundaSpider(scrapy.Spider):
     today_str = datetime.date.today().strftime("%Y-%m-%d")
     output = "/home/katalin/PycharmProjectsFolder/funda-project/data/funda_" + today_str + ".csv"
 
+    existing_links = get_latest_links(
+        '/home/katalin/bucket_credentials/portfolio-projects-310210-6f276e48986d.json',
+        'portfolio-projects-310210')
+
     def __init__(self):
         # empty outputfile
         open(self.output, "w").close()
@@ -58,7 +62,7 @@ class FundaSpider(scrapy.Spider):
                       range(2, max(page_numbers) + 1)]
         # page_links = page_links + self.start_urls
         page_links.insert(0, self.start_urls[0])
-        page_links = [sys.argv[1]]
+        # page_links = [sys.argv[1]]
 
         for link in page_links:
             yield response.follow(url=link, callback=self.parse_desc)
@@ -114,10 +118,7 @@ class FundaSpider(scrapy.Spider):
                 columns=['street', 'zip', 'price', 'living_area',
                          'nr_rooms', 'link', 'update_date'])
 
-            existing_links = get_latest_links('/home/katalin/bucket_credentials/portfolio-projects-310210-6f276e48986d.json',
-                                              'portfolio-projects-310210')
-
-            df = df[~df['link'].isin(existing_links)]
+            df = df[~df['link'].isin(self.existing_links)]
 
             lst_values = df.values.tolist()
             for i in lst_values:
